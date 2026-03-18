@@ -258,3 +258,24 @@ if (window.innerWidth > 768) {
     glow.style.top = e.clientY + 'px';
   });
 }
+
+// ===== WHATSAPP FORM REDIRECT =====
+window.handleSubmit = function(event) {
+  event.preventDefault();
+  
+  const waName = document.getElementById('waName').value || '';
+  const waEmail = document.getElementById('waEmail').value || '';
+  const waType = document.getElementById('waType').value || '';
+  const waMessage = document.getElementById('waMessage').value || '';
+  
+  let text = `Hi Gautam! I want to build something epic.\n\n`;
+  text += `*Name:* ${waName}\n`;
+  text += `*Email:* ${waEmail}\n`;
+  if(waType) text += `*Project Type:* ${waType}\n`;
+  if(waMessage) text += `*Message:* ${waMessage}\n`;
+  
+  const encodedText = encodeURIComponent(text);
+  const waUrl = `https://wa.me/918347687963?text=${encodedText}`;
+  
+  window.open(waUrl, '_blank');
+};
