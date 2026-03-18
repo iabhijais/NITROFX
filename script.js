@@ -1,9 +1,17 @@
 // ===== LOADER =====
+const hideLoader = () => {
+  const loader = document.getElementById('loader');
+  if (loader && !loader.classList.contains('hidden')) {
+    loader.classList.add('hidden');
+  }
+};
+
 window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.getElementById('loader').classList.add('hidden');
-  }, 2200);
+  setTimeout(hideLoader, 600);
 });
+
+// Fallback: Force hide loader after 2 seconds regardless of load event
+setTimeout(hideLoader, 2000);
 
 // ===== NAVBAR SCROLL =====
 const navbar = document.getElementById('navbar');
