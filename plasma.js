@@ -150,10 +150,23 @@ export function initPlasma(containerId, options = {}) {
       window.addEventListener('mousemove', handleMouseMove); // Listen on window for global effect tracking
     }
 
+    let lastWidth = 0;
+    let lastHeight = 0;
+
     const setSize = () => {
       const rect = containerEl.getBoundingClientRect();
       const width = Math.max(1, Math.floor(rect.width));
       const height = Math.max(1, Math.floor(rect.height));
+      
+      // Ignore small vertical resizes (address bar expanding/collapsing)
+      // which aggressively dumps the WebGL buffer and causes flickering on mobile.
+      if (Math.abs(width - lastWidth) < 10 && Math.abs(height - lastHeight) < 150) {
+        return;
+      }
+      
+      lastWidth = width;
+      lastHeight = height;
+
       renderer.setSize(width, height);
       const res = program.uniforms.iResolution.value;
       res[0] = gl.drawingBufferWidth;
@@ -166,6 +179,20 @@ export function initPlasma(containerId, options = {}) {
 
     let raf = 0;
     const t0 = performance.now();
+    
+    // Mobile Scroll Performance Boost: Pause WebGL rendering during scroll
+    let isScrolling = false;
+    let scrollTimeout = null;
+    if (window.innerWidth < 768) {
+      window.addEventListener('scroll', () => {
+        isScrolling = true;
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          isScrolling = false;
+        }, 150);
+      }, { passive: true });
+    }
+
     const loop = t => {
       let timeValue = (t - t0) * 0.001;
       if (direction === 'pingpong') {
@@ -180,7 +207,12 @@ export function initPlasma(containerId, options = {}) {
       } else {
         program.uniforms.iTime.value = timeValue;
       }
-      renderer.render({ scene: mesh });
+      
+      // Suspend rendering on mobile while actively scrolling to stop flicker
+      if (!isScrolling) {
+        renderer.render({ scene: mesh });
+      }
+      
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
