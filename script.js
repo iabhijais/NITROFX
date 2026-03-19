@@ -33,20 +33,22 @@ navLinks.querySelectorAll('a').forEach(link => {
   });
 });
 
-// ===== ACTIVE NAV LINK =====
+// ===== ACTIVE NAV LINK (Optimized for Mobile) =====
 const sections = document.querySelectorAll('section[id]');
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY + 200;
-  sections.forEach(sec => {
-    const top = sec.offsetTop;
-    const height = sec.offsetHeight;
-    const id = sec.getAttribute('id');
-    const link = document.querySelector(`.nav-links a[href="#${id}"]`);
-    if (link) {
-      link.classList.toggle('active', scrollY >= top && scrollY < top + height);
+const navLinksItems = document.querySelectorAll('.nav-links a');
+
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.getAttribute('id');
+      navLinksItems.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+      });
     }
   });
-});
+}, { rootMargin: '-30% 0px -70% 0px' }); // Triggers when section is roughly in the top 30% of viewport
+
+sections.forEach(sec => sectionObserver.observe(sec));
 
 // ===== COUNTER ANIMATION =====
 function animateCounters() {

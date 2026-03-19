@@ -33,9 +33,11 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 html, body {
+  position: relative;
   overflow-x: hidden;
-  max-width: 100vw;
+  max-width: 100%;
   width: 100%;
+  overscroll-behavior-y: none;
 }
 body { 
   font-family: 'Outfit', sans-serif; 
@@ -376,9 +378,17 @@ body {
   .contact-container { grid-template-columns: 1fr; padding: 40px; }
 }
 @media (max-width: 768px) {
-  .section { padding: 80px 24px; }
+  /* iOS Performance Boost: Disable heavy backdrop filters on mobile for buttery smooth scroll */
+  .stat-item, .about-image, .about-text, .service-card, .portfolio-item, .contact-container, .navbar, .nav-links {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .navbar.scrolled { background: rgba(15, 15, 15, 0.98) !important; }
+  .stat-item, .about-image, .about-text, .service-card, .contact-container, .nav-links { background: rgba(18, 18, 18, 0.95) !important; }
+
+  .section { padding: 80px 24px; overflow: hidden; }
   .navbar { width: calc(100% - 32px); border-radius: var(--radius); padding: 14px 20px; }
-  .nav-links { position: fixed; top: 80px; left: 16px; right: 16px; background: rgba(15,15,15,0.98); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid var(--border-color); border-radius: var(--radius-lg); flex-direction: column; padding: 40px; transition: var(--transition); opacity: 0; visibility: hidden; transform: translateY(-10px); }
+  .nav-links { position: fixed; top: 80px; left: 16px; right: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-lg); flex-direction: column; padding: 40px; transition: var(--transition); opacity: 0; visibility: hidden; transform: translateY(-10px); }
   .nav-links.open { opacity: 1; visibility: visible; transform: translateY(0); }
   .hamburger { display: flex; }
   .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 24px; }

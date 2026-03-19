@@ -100,7 +100,7 @@ export function initPlasma(containerId, options = {}) {
       webgl: 2,
       alpha: true,
       antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2)
+      dpr: Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1 : 1.5)
     });
     const gl = renderer.gl;
     const canvas = gl.canvas;
