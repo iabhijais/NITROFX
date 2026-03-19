@@ -96,14 +96,15 @@ document.querySelectorAll('.reveal-3d').forEach(el => reveal3dObserver.observe(e
 
 // ===== PORTFOLIO TABS =====
 const tabButtons = document.querySelectorAll('.tab-btn');
-const portfolioItems = document.querySelectorAll('.portfolio-item');
+const portfolioGridItems = document.querySelectorAll('#portfolioGrid .portfolio-item');
+const allPortfolioItems = document.querySelectorAll('.portfolio-item');
 
 tabButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     tabButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const tab = btn.dataset.tab;
-    portfolioItems.forEach(item => {
+    portfolioGridItems.forEach(item => {
       if (tab === 'all' || item.dataset.category === tab) {
         item.style.display = 'block';
         setTimeout(() => { item.style.opacity = '1'; item.style.transform = 'scale(1)'; }, 50);
@@ -116,11 +117,16 @@ tabButtons.forEach(btn => {
   });
 });
 
-// ===== PORTFOLIO CLICK -> INSTAGRAM =====
-portfolioItems.forEach(item => {
+// ===== PORTFOLIO CLICK -> INSTAGRAM OR LIGHTBOX =====
+allPortfolioItems.forEach(item => {
   item.addEventListener('click', () => {
     const link = item.dataset.link;
-    if (link) window.open(link, '_blank');
+    if (link) {
+      window.open(link, '_blank');
+    } else {
+      const img = item.querySelector('img');
+      if (img) openImageLightbox(img.src);
+    }
   });
 });
 
@@ -213,6 +219,12 @@ const lightboxClose = document.getElementById('lightboxClose');
 
 function openVideoLightbox(videoId) {
   lightboxContent.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" allowfullscreen allow="autoplay"></iframe>`;
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function openImageLightbox(src) {
+  lightboxContent.innerHTML = `<img src="${src}" style="max-width:100%; max-height:80vh; border-radius:12px; object-fit:contain;">`;
   lightbox.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
