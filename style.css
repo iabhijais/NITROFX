@@ -27,17 +27,10 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 html { 
-  scroll-behavior: smooth; 
+  scroll-behavior: smooth;
   scrollbar-width: thin; 
   scrollbar-color: #333 var(--bg-base);
   -webkit-text-size-adjust: 100%;
-}
-html, body {
-  position: relative;
-  overflow-x: hidden;
-  max-width: 100%;
-  width: 100%;
-  overscroll-behavior-y: none;
 }
 body { 
   font-family: 'Outfit', sans-serif; 
@@ -46,6 +39,8 @@ body {
   line-height: 1.6; 
   -webkit-font-smoothing: antialiased;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;         /* Allow vertical scroll always — prevents WebGL from hijacking */
+  overscroll-behavior: none;   /* No bounce effect = smoother scroll feel */
 }
 
 ::-webkit-scrollbar { width: 8px; }
@@ -55,7 +50,7 @@ body {
 
 /* LOADER */
 .loader-overlay { position: fixed; inset: 0; z-index: 10000; background: #050505; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 24px; transition: opacity 0.8s ease, visibility 0.8s; }
-.loader-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; display: none; }
 .loader-logo { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; color: #fff; animation: pulse-glow 1.5s ease-in-out infinite; }
 .loader-bar { width: 160px; height: 2px; background: rgba(255,255,255,0.1); overflow: hidden; }
 .loader-bar-inner { height: 100%; width: 0; background: #fff; animation: load-fill 2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -110,7 +105,6 @@ body {
   display: flex; 
   flex-direction: column; 
   align-items: center;
-  overflow: hidden; 
   padding-top: 120px;
   padding-bottom: 60px;
   box-sizing: border-box;
@@ -241,13 +235,155 @@ body {
   transition: var(--transition); 
   backdrop-filter: blur(24px); 
   cursor: pointer; 
-  /* Critical for huge image galleries: skips rendering off-screen and provides massive scroll boost */
+  /* Critical for huge image galleries: skips rendering off-screen */
   content-visibility: auto;
-  contain-intrinsic-size: 300px;
+  contain-intrinsic-size: 0 300px;
 }
 .portfolio-item { aspect-ratio: 16/9; }
 .portfolio-item:hover, .video-card:hover { transform: translateY(-6px); border-color: var(--border-hover); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-.portfolio-item img, .video-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* IMAGE SKELETON SHIMMER — shows while image is loading */
+.portfolio-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0.03) 0%, 
+    rgba(255,255,255,0.08) 40%, 
+    rgba(255,255,255,0.03) 80%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  z-index: 1;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+.portfolio-item.img-loaded::before {
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* IMAGE FADE-IN — smooth appear when loaded */
+.portfolio-item img {
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+  opacity: 0;    /* Start invisible */
+  will-change: opacity;
+}
+.portfolio-item.img-loaded img {
+  opacity: 1;    /* Fade in when loaded */
+}
+
+/* CLICKS BY ME — 4-column grid */
+.clicks-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Each click card */
+.click-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  aspect-ratio: 3/2;
+  cursor: pointer;
+  transition: var(--transition);
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+}
+.click-card.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.click-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+  transform: translateY(-4px) scale(1.01);
+}
+.click-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+}
+.click-card:hover img {
+  transform: scale(1.07);
+}
+.click-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+}
+.click-card:hover .overlay {
+  opacity: 1;
+}
+.click-card .overlay span {
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* LOAD MORE BUTTON */
+.clicks-load-more-wrap {
+  text-align: center;
+  margin-top: 48px;
+}
+.clicks-load-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 36px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.clicks-load-more-btn:hover {
+  background: #fff;
+  border-color: #fff;
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255,255,255,0.1);
+}
+.clicks-load-more-btn:hover svg {
+  stroke: #000;
+}
+.btn-remaining {
+  background: rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.clicks-load-more-btn:hover .btn-remaining {
+  background: rgba(0,0,0,0.1);
+  color: #555;
+}
+
+.video-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 .portfolio-item:hover img, .video-card:hover .video-thumb img { transform: scale(1.05); }
 
 /* VIDEO SPECIFIC */
@@ -388,6 +524,7 @@ body {
   .about-image { max-width: 520px; margin: 0 auto; min-height: 400px; }
   .services-grid { grid-template-columns: 1fr 1fr; }
   .contact-container { grid-template-columns: 1fr; padding: 40px; }
+  .clicks-grid { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 768px) {
   /* iOS Performance Boost: Disable heavy backdrop filters on mobile for buttery smooth scroll */
@@ -408,6 +545,7 @@ body {
   .stat-number { font-size: 2.4rem; }
   .services-grid { grid-template-columns: 1fr; gap: 16px; }
   .portfolio-grid, .video-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .clicks-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .hero h1 { font-size: clamp(2.8rem, 12vw, 4rem); letter-spacing: -2px; }
   .footer-content { flex-direction: column; align-items: center; text-align: center; gap: 60px; }
   .footer-brand { max-width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; }

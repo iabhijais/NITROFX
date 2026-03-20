@@ -111,7 +111,9 @@ export function initPlasma(containerId, options = {}) {
     canvas.style.top = '0';
     canvas.style.left = '0';
     canvas.style.zIndex = '0';
-    canvas.style.pointerEvents = 'none'; // Keep interactions behind if needed
+    canvas.style.pointerEvents = 'none'; // No mouse/click events on canvas
+    canvas.style.touchAction = 'auto';   // CRITICAL: Allow native touch scroll — don't block it
+    canvas.style.userSelect = 'none';
     containerEl.appendChild(canvas);
 
     const geometry = new Triangle(gl);
@@ -180,18 +182,16 @@ export function initPlasma(containerId, options = {}) {
     let raf = 0;
     const t0 = performance.now();
     
-    // Mobile Scroll Performance Boost: Pause WebGL rendering during scroll
+    // Scroll Performance Boost: Pause WebGL rendering during scroll (both desktop & mobile)
     let isScrolling = false;
     let scrollTimeout = null;
-    if (window.innerWidth < 768) {
-      window.addEventListener('scroll', () => {
-        isScrolling = true;
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-          isScrolling = false;
-        }, 150);
-      }, { passive: true });
-    }
+    window.addEventListener('scroll', () => {
+      isScrolling = true;
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        isScrolling = false;
+      }, 100);
+    }, { passive: true });
 
     const loop = t => {
       let timeValue = (t - t0) * 0.001;
