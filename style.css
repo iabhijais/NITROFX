@@ -39,8 +39,9 @@ body {
   line-height: 1.6; 
   -webkit-font-smoothing: antialiased;
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;         /* Allow vertical scroll always — prevents WebGL from hijacking */
-  overscroll-behavior: none;   /* No bounce effect = smoother scroll feel */
+  touch-action: pan-y;         
+  overscroll-behavior: none;   
+  overflow-x: hidden;
 }
 
 ::-webkit-scrollbar { width: 8px; }
@@ -180,14 +181,14 @@ body {
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
 /* SECTION COMMON */
-.section { padding: 120px 40px; position: relative; }
+.section { padding: 120px 40px; position: relative; z-index: 1; }
 .section-header { text-align: center; margin-bottom: 80px; }
 .section-tag { display: inline-block; color: var(--text-muted); font-size: 0.85rem; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
 .section-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 20px; color: #fff; }
 .section-subtitle { color: var(--text-secondary); font-size: 1.15rem; max-width: 600px; margin: 0 auto; }
 
 /* BENTO STATS */
-.stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1200px; margin: 0 auto 60px; padding: 0 40px; }
+.stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1200px; margin: 0 auto 60px; padding: 0 40px; position: relative; z-index: 1; }
 .stat-item { background: rgba(18, 18, 18, 0.95); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 40px 24px; text-align: center; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, background 0.3s ease; position: relative; overflow: hidden; }
 @media (hover: hover) {
   .stat-item:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateY(-4px); }
@@ -424,7 +425,7 @@ body {
 .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-muted); }
 
 /* FOOTER */
-.footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 80px 40px 40px; margin-top: 60px; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4)); }
+.footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 80px 40px 40px; margin-top: 60px; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4)); position: relative; z-index: 1; }
 .footer-content { display: flex; justify-content: space-between; align-items: flex-start; max-width: 1200px; margin: 0 auto; padding-bottom: 60px; border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; gap: 40px; }
 .footer-brand { max-width: 320px; text-align: left; }
 .footer-logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 12px; letter-spacing: -0.5px; }

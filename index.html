@@ -13,8 +13,8 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
 </head>
 <body>
-  <!-- PLASMA BACKGROUND -->
-  <div id="plasma-container" style="position: absolute; top: -10vh; left: 0; width: 100%; height: 120vh; z-index: -1; pointer-events: none; overflow: hidden; will-change: transform; touch-action: auto;"></div>
+  <!-- PLASMA BACKGROUND (Full Page) -->
+  <div id="plasma-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; overflow: hidden; touch-action: auto;"></div>
 
   <!-- LOADER -->
   <div class="loader-overlay" id="loader">
@@ -446,9 +446,21 @@
       speed: 1,
       direction: 'pingpong',
       scale: 1,
-      opacity: 1,
-      mouseInteractive: false
+      opacity: 1
     });
+  </script>
+  <!-- Fallback if module import fails -->
+  <script nomodule src="plasma.js"></script>
+  <script nomodule>
+    if (window.initPlasma) {
+      window.initPlasma('plasma-container', {
+        color: '#f6f4fa',
+        speed: 1,
+        direction: 'pingpong',
+        scale: 1,
+        opacity: 1
+      });
+    }
   </script>
 </body>
 </html>
