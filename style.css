@@ -188,7 +188,7 @@ body {
 
 /* BENTO STATS */
 .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1200px; margin: 0 auto 60px; padding: 0 40px; }
-.stat-item { background: var(--bg-card); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 40px 24px; text-align: center; transition: var(--transition); position: relative; overflow: hidden; }
+.stat-item { background: rgba(18, 18, 18, 0.95); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 40px 24px; text-align: center; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, background 0.3s ease; position: relative; overflow: hidden; }
 @media (hover: hover) {
   .stat-item:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateY(-4px); }
 }
@@ -197,12 +197,12 @@ body {
 
 /* ABOUT BENTO */
 .about-grid { display: grid; grid-template-columns: 420px 1fr; gap: 24px; max-width: 1200px; margin: 0 auto; align-items: stretch; }
-.about-image { position: relative; border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border-color); background: var(--bg-card); backdrop-filter: blur(24px); min-height: 520px; }
+.about-image { position: relative; border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border-color); background: rgba(18, 18, 18, 0.95); min-height: 520px; }
 .about-image img { width: 100%; height: 100%; object-fit: cover; object-position: center 25%; filter: brightness(0.85) contrast(1.1); transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); display: block; }
 @media (hover: hover) {
   .about-image:hover img { filter: brightness(1.1) contrast(1.15); transform: scale(1.04); }
 }
-.about-text { background: var(--bg-card); backdrop-filter: blur(24px); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 48px 52px; display: flex; flex-direction: column; justify-content: center; }
+.about-text { background: rgba(18, 18, 18, 0.95); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 48px 52px; display: flex; flex-direction: column; justify-content: center; }
 .about-text h3 { font-family: 'Space Grotesk', sans-serif; font-size: 2.4rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -1.5px; color: #fff; line-height: 1.1; }
 .about-text .role-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--text-muted); margin-bottom: 32px; font-weight: 500; }
 .about-text p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.8; margin-bottom: 18px; }
@@ -213,7 +213,7 @@ body {
 
 /* SERVICES BENTO */
 .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto; }
-.service-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 48px 36px; transition: var(--transition); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.service-card { background: rgba(18, 18, 18, 0.95); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 48px 36px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease; }
 .service-card:hover { transform: translateY(-6px); border-color: var(--border-hover); background: var(--bg-card-hover); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
 .service-icon { width: 56px; height: 56px; border-radius: var(--radius); background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 28px; font-size: 1.5rem; border: 1px solid var(--border-color); }
 .service-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; color: #fff; letter-spacing: -0.5px; }
@@ -225,19 +225,18 @@ body {
 .tab-btn.active, .tab-btn:hover { background: #fff; border-color: #fff; color: #000; }
 
 /* THUMBNAILS & VIDEO GRID */
-.portfolio-grid, .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px; max-width: 1400px; margin: 0 auto; }
+.portfolio-grid, .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px; max-width: 1400px; margin: 0 auto; contain: layout style; }
 .portfolio-item, .video-card { 
   position: relative; 
   border-radius: var(--radius-lg); 
   overflow: hidden; 
-  background: var(--bg-card); 
+  background: rgba(18, 18, 18, 0.95); 
   border: 1px solid var(--border-color); 
-  transition: var(--transition); 
-  backdrop-filter: blur(24px); 
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease; 
   cursor: pointer; 
-  /* Critical for huge image galleries: skips rendering off-screen */
   content-visibility: auto;
   contain-intrinsic-size: 0 300px;
+  contain: layout style;
 }
 .portfolio-item { aspect-ratio: 16/9; }
 .portfolio-item:hover, .video-card:hover { transform: translateY(-6px); border-color: var(--border-hover); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
@@ -287,6 +286,7 @@ body {
   gap: 16px;
   max-width: 1400px;
   margin: 0 auto;
+  contain: layout style;
 }
 
 /* Each click card */
@@ -410,7 +410,7 @@ body {
 @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 /* CONTACT */
-.contact-container { background: var(--bg-card); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 60px; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.contact-container { background: rgba(18, 18, 18, 0.95); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 60px; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
 .contact-info h3 { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 20px; color: #fff; letter-spacing: -1px; }
 .contact-info p { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 40px; line-height: 1.6; }
 .contact-link { display: flex; align-items: center; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--border-color); transition: var(--transition); text-decoration: none; color: var(--text-primary); }
@@ -461,7 +461,6 @@ body {
   opacity: 0; 
   transform: translateY(40px) translateZ(0); 
   transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1); 
-  will-change: transform, opacity;
 }
 .reveal.visible { 
   opacity: 1; 
@@ -483,7 +482,6 @@ body {
   transform: perspective(800px) rotateX(8deg) translateY(50px) scale(0.97) translateZ(0);
   transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: center top;
-  will-change: transform, opacity;
 }
 .reveal-3d.visible {
   opacity: 1;
@@ -497,9 +495,7 @@ body {
 .reveal-3d:nth-child(5) { transition-delay: 0.4s; }
 .reveal-3d:nth-child(6) { transition-delay: 0.5s; }
 
-/* Parallax depth layers */
-.parallax-deep { will-change: transform; }
-.parallax-mid { will-change: transform; }
+/* Parallax depth layers — intentionally no static will-change to avoid layer promotion jitter */
 
 /* Section separators with gradient fade */
 .section::before {

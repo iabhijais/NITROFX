@@ -10,9 +10,16 @@ setTimeout(hideLoader, 2000);
 
 // ===== NAVBAR SCROLL =====
 const navbar = document.getElementById('navbar');
+let navScrollTicking = false;
 window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', window.scrollY > 50);
-});
+  if (!navScrollTicking) {
+    navScrollTicking = true;
+    requestAnimationFrame(() => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+      navScrollTicking = false;
+    });
+  }
+}, { passive: true });
 
 // ===== MOBILE NAV =====
 const hamburger = document.getElementById('hamburger');
@@ -181,9 +188,20 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // ===== CURSOR GLOW (desktop only) =====
 if (window.innerWidth > 768) {
   const glow = document.createElement('div');
-  glow.style.cssText = 'position:fixed;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,45,85,0.06),transparent 70%);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:opacity 0.3s;';
+  glow.style.cssText = 'position:fixed;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,45,85,0.06),transparent 70%);pointer-events:none;z-index:9998;transform:translate(-50%,-50%) translateZ(0);transition:opacity 0.3s;will-change:transform;';
   document.body.appendChild(glow);
-  document.addEventListener('mousemove', (e) => { glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; });
+  let glowRAF = 0;
+  let glowX = 0, glowY = 0;
+  document.addEventListener('mousemove', (e) => {
+    glowX = e.clientX;
+    glowY = e.clientY;
+    if (!glowRAF) {
+      glowRAF = requestAnimationFrame(() => {
+        glow.style.transform = `translate(${glowX - 150}px, ${glowY - 150}px) translateZ(0)`;
+        glowRAF = 0;
+      });
+    }
+  }, { passive: true });
 }
 
 // ===== WHATSAPP FORM =====
@@ -281,6 +299,20 @@ const clicksImages = [
 const BATCH_SIZE = 12;
 let clicksLoaded = 0;
 
+// Helper: convert original path to WebP thumbnail/lightbox path
+function clicksThumbPath(src) {
+  const dir = src.substring(0, src.lastIndexOf('/') + 1);
+  const file = src.substring(src.lastIndexOf('/') + 1);
+  const webpFile = file.replace(/\.(jpg|jpeg|png|bmp|tiff)$/i, '.webp');
+  return dir + 'thumbs/' + webpFile;
+}
+function clicksLightboxPath(src) {
+  const dir = src.substring(0, src.lastIndexOf('/') + 1);
+  const file = src.substring(src.lastIndexOf('/') + 1);
+  const webpFile = file.replace(/\.(jpg|jpeg|png|bmp|tiff)$/i, '.webp');
+  return dir + 'lightbox/' + webpFile;
+}
+
 function renderClicksBatch() {
   const grid = document.getElementById('clicksGrid');
   const loadMoreWrap = document.getElementById('clicksLoadMoreWrap');
@@ -294,7 +326,7 @@ function renderClicksBatch() {
     card.className = 'click-card';
 
     const img = document.createElement('img');
-    img.src = src;
+    img.src = clicksThumbPath(src);       // Load small WebP thumbnail
     img.alt = 'Personal Click';
     img.loading = 'lazy';
     img.decoding = 'async';
@@ -307,8 +339,8 @@ function renderClicksBatch() {
     card.appendChild(overlay);
     grid.appendChild(card);
 
-    // Open in lightbox on click
-    card.addEventListener('click', () => openImageLightbox(src));
+    // Open LIGHTBOX version (higher quality) on click
+    card.addEventListener('click', () => openImageLightbox(clicksLightboxPath(src)));
 
     // Staggered smooth fade-in
     setTimeout(() => card.classList.add('visible'), i * 50);

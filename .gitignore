@@ -1,4 +1,30 @@
+# Dependencies
+node_modules/
+
+# Raw camera photos (originals are 690MB+ — only optimized thumbs go to git)
+assets/CLICKS BY ME/*.JPG
+assets/CLICKS BY ME/*.jpeg
+assets/CLICKS BY ME/*.PNG
+assets/CLICKS BY ME/*.png
+assets/CLICKS BY ME/*.jpg
+!assets/CLICKS BY ME/thumbs/
+!assets/CLICKS BY ME/lightbox/
+
+# Build artifacts
+generate-thumbs.js
+package.json
+package-lock.json
+
+# OS files
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# Python cache
 __pycache__/
 *.pyc
-fetch_*.py

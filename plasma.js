@@ -190,7 +190,7 @@ export function initPlasma(containerId, options = {}) {
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
         isScrolling = false;
-      }, 100);
+      }, 200);
     }, { passive: true });
 
     const loop = t => {
